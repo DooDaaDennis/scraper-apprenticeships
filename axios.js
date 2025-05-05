@@ -4,9 +4,8 @@ const cheerio = require("cheerio");
 const initialURL =
   "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses";
 
-const allPages = [];
-
 async function getAllPages() {
+  const allPages = [];
   let pageNumber = 1;
   try {
     while (true) {
@@ -40,10 +39,10 @@ async function getItems(url) {
     const items = $("li.das-search-results__list-item")
       .map((_, item) => {
         const $item = $(item);
-        const heading = $item.find("h2").text().trim();
-        const link = $item.find("a").attr("href");
+        const standardName = $item.find("h2").text().trim();
+        const standardID = $item.find("a").attr("id").split("-").pop();
 
-        return { heading, link };
+        return { standardName, standardID };
       })
       .toArray();
 
@@ -55,7 +54,29 @@ async function getItems(url) {
   }
 }
 
-// getItems(initialURL);
+async function getProviders(standard) {
+  try {
+    const providerURL = `https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/${standard.standardID}/providers`;
+    const { data } = await axios.get(providerURL);
+    const $ = cheerio.load(data);
+    const trainingProviders = $("div.govuk-summary-card__title-wrapper h2 a")
+      .map((_, provider) => {
+        const $provider = $(provider);
+        const providerName = $provider.text().trim();
+        const providerLink = $provider.attr("href");
+
+        return { providerName, providerLink };
+      })
+      .toArray();
+
+    return trainingProviders;
+  } catch (error) {
+    console.error("Error fetching providers:", error);
+    return [];
+  }
+}
+////////////////////////
+
 const allStandards = [];
 
 (async () => {
@@ -66,5 +87,8 @@ const allStandards = [];
     allStandards.push(...pageItems);
   }
 
-  console.log(allStandards);
+  for (const standard of allStandards) {
+    const providers = await getProviders(standard);
+    console.log(`Providers for ${standard.standardName}:`, providers);
+  }
 })();
