@@ -63,9 +63,10 @@ async function getProviders(standard) {
       .map((_, provider) => {
         const $provider = $(provider);
         const providerName = $provider.text().trim();
+        const providerID = $provider.attr("id");
         const providerLink = $provider.attr("href");
 
-        return { providerName, providerLink };
+        return { providerName, providerLink, providerID };
       })
       .toArray();
 
