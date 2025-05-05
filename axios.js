@@ -47,17 +47,24 @@ async function getItems(url) {
       })
       .toArray();
 
-    console.log(items);
+    return items;
+
+    // console.log(items);
   } catch (error) {
     console.error("Error fetching items:", error);
   }
 }
 
 // getItems(initialURL);
+const allStandards = [];
+
 (async () => {
   const pages = await getAllPages();
 
   for (const page of pages) {
-    await getItems(page);
+    const pageItems = await getItems(page);
+    allStandards.push(...pageItems);
   }
+
+  console.log(allStandards);
 })();
