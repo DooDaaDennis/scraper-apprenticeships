@@ -1,10 +1,10 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-const url =
+const initialURL =
   "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses";
 
-async function getItems() {
+async function getItems(url) {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
@@ -25,4 +25,4 @@ async function getItems() {
   }
 }
 
-getItems();
+getItems(initialURL);
