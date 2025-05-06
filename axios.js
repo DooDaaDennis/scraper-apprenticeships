@@ -1,15 +1,12 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-const initialURL =
-  "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses";
-
-async function getAllPages() {
+async function getAllPages(baseURL) {
   const allPages = [];
   let pageNumber = 1;
   try {
     while (true) {
-      const url = `${initialURL}?PageNumber=${pageNumber}`;
+      const url = `${baseURL}?PageNumber=${pageNumber}`;
       const { data } = await axios.get(url);
       const $ = cheerio.load(data);
 
@@ -79,9 +76,11 @@ async function getProviders(standard) {
 ////////////////////////
 
 const allStandards = [];
+const initialURL =
+  "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses";
 
 (async () => {
-  const pages = await getAllPages();
+  const pages = await getAllPages(initialURL);
 
   for (const page of pages) {
     const pageItems = await getItems(page);
