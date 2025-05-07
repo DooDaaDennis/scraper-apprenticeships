@@ -1,10 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
 async function getAllPages(baseURL) {
   const allPages = [];
   let pageNumber = 1;
