@@ -5,7 +5,7 @@ const fs = require("fs");
 const myData = fs.readFileSync("standards.json", "utf-8");
 const standards = JSON.parse(myData);
 
-async function getProviders(pageURL) {
+async function getEPAOs(pageURL) {
   try {
     const providerURL = pageURL;
     const { data } = await axios.get(providerURL);
@@ -27,3 +27,22 @@ async function getProviders(pageURL) {
     return [];
   }
 }
+
+(async () => {
+  console.log("Getting EPAOs");
+  for (const standard of standards) {
+    console.log("Getting EPAOs for:", standard.standardName);
+    const standardEPAOs = [];
+    for (const page of standard.pages) {
+      const EPAOs = await getEPAOs(page);
+      standardProviders.push(...providers);
+    }
+    standard.standardProviders = standardProviders;
+  }
+
+  fs.writeFileSync(
+    "standards.json",
+    JSON.stringify(standards, null, 2),
+    "utf-8"
+  );
+})();

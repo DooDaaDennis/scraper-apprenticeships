@@ -34,7 +34,7 @@ async function getProviders(pageURL) {
     console.log("Getting providers for:", standard.standardName);
     const standardProviders = [];
     for (const page of standard.pages) {
-      const providers = await getProviders(standard, page);
+      const providers = await getProviders(page);
       standardProviders.push(...providers);
     }
     standard.standardProviders = standardProviders;
