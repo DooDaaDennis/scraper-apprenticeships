@@ -84,6 +84,7 @@ const initialURL =
   "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses";
 
 (async () => {
+  console.log("Gathering apprenticeship pages");
   //get all apprentice standard pages
   const pages = await getAllPages(initialURL);
 
