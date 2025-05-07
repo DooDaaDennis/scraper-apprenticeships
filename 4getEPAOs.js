@@ -5,25 +5,25 @@ const fs = require("fs");
 const myData = fs.readFileSync("standards.json", "utf-8");
 const standards = JSON.parse(myData);
 
-async function getEPAOs(pageURL) {
+async function getEPAOs(standardID) {
   try {
-    const providerURL = pageURL;
-    const { data } = await axios.get(providerURL);
+    const standardURL = `https://find-epao.apprenticeships.education.gov.uk/courses/${standardID}/assessment-organisations`;
+    const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
-    const trainingProviders = $("div.govuk-summary-card__title-wrapper h2 a")
-      .map((_, provider) => {
-        const $provider = $(provider);
-        const providerName = $provider.text().trim();
-        const providerID = $provider.attr("id");
-        const providerLink = $provider.attr("href");
+    const EPAO = $("li.das-search-results__list-item h2 a")
+      .map((EPAO) => {
+        const $EPAO = $(EPAO);
+        const EPAOName = $EPAO.text().trim();
+        const EPAOID = $EPAO.attr("id");
+        const EPAOLink = $EPAO.attr("href");
 
-        return { providerName, providerLink, providerID };
+        return { EPAOName, EPAOID, EPAOLink };
       })
       .toArray();
 
-    return trainingProviders;
+    return EPAO;
   } catch (error) {
-    console.error("Error fetching providers:", error);
+    console.error("Error fetching EPAOs:", error);
     return [];
   }
 }
@@ -33,11 +33,9 @@ async function getEPAOs(pageURL) {
   for (const standard of standards) {
     console.log("Getting EPAOs for:", standard.standardName);
     const standardEPAOs = [];
-    for (const page of standard.pages) {
-      const EPAOs = await getEPAOs(page);
-      standardProviders.push(...providers);
-    }
-    standard.standardProviders = standardProviders;
+    const EPAOs = await getEPAOs(standard.ID);
+    standardEPAOs.push(...EPAOs);
+    standard.standardEPAOs = standardEPAOs;
   }
 
   fs.writeFileSync(
