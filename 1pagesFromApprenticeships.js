@@ -55,28 +55,6 @@ async function getItems(url) {
   }
 }
 
-async function getProviders(standard) {
-  try {
-    const providerURL = `https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/${standard.standardID}/providers`;
-    const { data } = await axios.get(providerURL);
-    const $ = cheerio.load(data);
-    const trainingProviders = $("div.govuk-summary-card__title-wrapper h2 a")
-      .map((_, provider) => {
-        const $provider = $(provider);
-        const providerName = $provider.text().trim();
-        const providerID = $provider.attr("id");
-        const providerLink = $provider.attr("href");
-
-        return { providerName, providerLink, providerID };
-      })
-      .toArray();
-
-    return trainingProviders;
-  } catch (error) {
-    console.error("Error fetching providers:", error);
-    return [];
-  }
-}
 ////////////////////////
 
 const allStandards = [];
