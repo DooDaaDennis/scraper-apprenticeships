@@ -87,8 +87,10 @@ const initialURL =
   "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses";
 
 (async () => {
+  //get all apprentice standard pages
   const pages = await getAllPages(initialURL);
 
+  //loop through pages and collect all standards
   for (const page of pages) {
     const pageItems = await getItems(page);
     allStandards.push(...pageItems);
@@ -100,18 +102,17 @@ const initialURL =
     return;
   }
 
-  // Get only the first standard
+  //loop through standards and get provider pages links for each
+  for (const [i, standard] of allStandards.entries()) {
+    console.log("Fetching provider pages for:", standard.standardName);
 
-  const firstStandard = allStandards[3];
+    const standardPages = await getAllPages(
+      `${initialURL}/${standard.standardID}/providers`
+    );
 
-  console.log("Fetching provider pages for:", firstStandard);
+    allStandards[i].pages = standardPages;
+    console.log(allStandards[i]);
+  }
 
   // Fetch pages only for the first standard
-  const firstStandardPages = await getAllPages(
-    `${initialURL}/${firstStandard.standardID}/providers`
-  );
-
-  allStandards[3].pages = firstStandardPages;
-
-  console.log(allStandards[getRandomInt(799)]);
 })();
