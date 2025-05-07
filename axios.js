@@ -108,8 +108,7 @@ const initialURL =
     `${initialStandardURL}${firstStandard.standardID}/providers`
   );
 
-  console.log({
-    standardName: firstStandard.standardName,
-    pages: firstStandardPages,
-  });
+  allStandards[3].pages = firstStandardPages;
+
+  console.log(allStandards[3]);
 })();
