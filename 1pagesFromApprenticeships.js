@@ -102,14 +102,18 @@ const initialURL =
 
   //loop through standards and get provider pages links for each
   for (const [i, standard] of allStandards.entries()) {
-    console.log("Fetching provider pages for:", standard.standardName);
+    console.log(
+      "Fetching provider pages for:",
+      standard.standardName,
+      `- ${i} out of ${allStandards.length}`
+    );
 
     const standardPages = await getAllPages(
       `${initialURL}/${standard.standardID}/providers`
     );
 
     allStandards[i].pages = standardPages;
-    console.log(allStandards[i]);
+    // console.log(allStandards[i]);
   }
 
   // Save to file

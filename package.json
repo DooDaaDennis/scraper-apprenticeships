@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node pagesFromApprenticeships.js"
+    "start": "node 1pagesFromApprenticeships.js && node 2levelJSON.js"
   },
   "author": "",
   "license": "ISC",
