@@ -24,7 +24,10 @@ async function getAllPages(baseURL) {
     // console.log("All Pages:", allPages);
     return allPages;
   } catch (error) {
-    console.error("Error fetching pages:", error);
+    console.error(
+      `Error fetching pages:${baseURL}?PageNumber=${pageNumber} `,
+      error
+    );
   }
 }
 
@@ -74,6 +77,8 @@ async function getProviders(standard) {
   }
 }
 ////////////////////////
+const initialStandardURL =
+  "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/"; //e.g. https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/488/providers?PageNumber=2
 
 const allStandards = [];
 const initialURL =
@@ -87,8 +92,24 @@ const initialURL =
     allStandards.push(...pageItems);
   }
 
-  for (const standard of allStandards) {
-    const providers = await getProviders(standard);
-    console.log(`Providers for ${standard.standardName}:`, providers);
+  // Ensure allStandards is populated
+  if (allStandards.length === 0) {
+    console.log("No standards found.");
+    return;
   }
+
+  // Get only the first standard
+  const firstStandard = allStandards[3];
+
+  console.log("Fetching provider pages for:", firstStandard);
+
+  // Fetch pages only for the first standard
+  const firstStandardPages = await getAllPages(
+    `${initialStandardURL}${firstStandard.standardID}/providers`
+  );
+
+  console.log({
+    standardName: firstStandard.standardName,
+    pages: firstStandardPages,
+  });
 })();
