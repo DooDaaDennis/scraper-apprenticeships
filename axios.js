@@ -1,6 +1,10 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 async function getAllPages(baseURL) {
   const allPages = [];
   let pageNumber = 1;
@@ -77,8 +81,6 @@ async function getProviders(standard) {
   }
 }
 ////////////////////////
-const initialStandardURL =
-  "https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/"; //e.g. https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/488/providers?PageNumber=2
 
 const allStandards = [];
 const initialURL =
@@ -99,16 +101,17 @@ const initialURL =
   }
 
   // Get only the first standard
+
   const firstStandard = allStandards[3];
 
   console.log("Fetching provider pages for:", firstStandard);
 
   // Fetch pages only for the first standard
   const firstStandardPages = await getAllPages(
-    `${initialStandardURL}${firstStandard.standardID}/providers`
+    `${initialURL}/${firstStandard.standardID}/providers`
   );
 
   allStandards[3].pages = firstStandardPages;
 
-  console.log(allStandards[3]);
+  console.log(allStandards[getRandomInt(799)]);
 })();
