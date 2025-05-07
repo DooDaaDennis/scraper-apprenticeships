@@ -1,5 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const fs = require("fs");
 
 async function getAllPages(baseURL) {
   const allPages = [];
@@ -110,5 +111,10 @@ const initialURL =
     console.log(allStandards[i]);
   }
 
-  // Fetch pages only for the first standard
+  // Save to file
+  fs.writeFileSync(
+    "standards.json",
+    JSON.stringify(allStandards, null, 2),
+    "utf-8"
+  );
 })();
