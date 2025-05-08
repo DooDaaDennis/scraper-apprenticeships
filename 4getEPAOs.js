@@ -10,14 +10,19 @@ async function getEPAOs(standardID) {
     const standardURL = `https://find-epao.apprenticeships.education.gov.uk/courses/${standardID}/assessment-organisations`;
     const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
-    const EPAO = $("li.das-search-results__list-item h2 a")
+    const EPAO = $("li.das-search-results__list-item")
       .map((_, EPAO) => {
         const $EPAO = $(EPAO);
-        const EPAOName = $EPAO.text().trim();
-        const EPAOID = $EPAO.attr("id");
-        const EPAOLink = $EPAO.attr("href");
+        const EPAOName = $EPAO.find("h2 a").text().trim();
+        const EPAOID = $EPAO.find("h2 a").attr("id");
+        const EPAOLink = $EPAO.find("h2 a").attr("href");
+        const EPAOversions = $EPAO
+          .find("dl dt:contains('Standard versions')")
+          .next("dd")
+          .text()
+          .trim();
 
-        return { EPAOName, EPAOID, EPAOLink };
+        return { EPAOName, EPAOID, EPAOLink, EPAOversions };
       })
       .toArray();
 
