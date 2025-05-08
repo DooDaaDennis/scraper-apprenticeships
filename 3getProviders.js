@@ -14,7 +14,7 @@ async function getProviders(pageURL) {
       .map((_, provider) => {
         const $provider = $(provider);
         const providerName = $provider.text().trim();
-        const providerID = $provider.attr("id");
+        const providerID = $provider.attr("id")?.match(/\d+/)?.[0] || null;
         const providerLink = $provider.attr("href");
 
         return { providerName, providerLink, providerID };
