@@ -11,7 +11,7 @@ async function getEPAOs(standardID) {
     const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
     const EPAO = $("li.das-search-results__list-item h2 a")
-      .map((EPAO) => {
+      .map((_, EPAO) => {
         const $EPAO = $(EPAO);
         const EPAOName = $EPAO.text().trim();
         const EPAOID = $EPAO.attr("id");
@@ -33,7 +33,7 @@ async function getEPAOs(standardID) {
   for (const standard of standards) {
     console.log("Getting EPAOs for:", standard.standardName);
     const standardEPAOs = [];
-    const EPAOs = await getEPAOs(standard.ID);
+    const EPAOs = await getEPAOs(standard.standardID);
     standardEPAOs.push(...EPAOs);
     standard.standardEPAOs = standardEPAOs;
   }
