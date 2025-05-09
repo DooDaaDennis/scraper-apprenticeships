@@ -1,3 +1,5 @@
+//connect to mongo shell and load("load_csv.js")
+
 const dbname = db.getSiblingDB("Apprenticeships");
 const final = dbname.getCollection("app-narts-provider-level-fwk-std");
 
