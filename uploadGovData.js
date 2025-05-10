@@ -2,7 +2,7 @@ require("dotenv").config();
 const { MongoClient } = require("mongodb");
 const fs = require("fs");
 
-async function main() {
+async function load_csv() {
   const client = new MongoClient(process.env.DATABASE);
 
   try {
@@ -41,4 +41,4 @@ async function main() {
   }
 }
 
-main();
+load_csv();
