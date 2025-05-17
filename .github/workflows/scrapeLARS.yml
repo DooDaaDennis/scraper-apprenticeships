@@ -19,6 +19,9 @@ jobs:
       - name: Set Date Environment Variable
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
+      - name: Start Tailscale
+        run: curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=${{ secrets.TAILSCALE_AUTH_KEY }}
+
       - name: Run Scripts
         env:
           DATABASE: ${{ secrets.DATABASE }}
