@@ -1,8 +1,11 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const fs = require("fs");
 require("dotenv").config();
 const { MongoClient } = require("mongodb");
+const dateParam = process.argv[2];
+
+console.log(dateParam);
+console.log("1pagesFromApprenticeships");
 
 async function getAllPages(baseURL) {
   const allPages = [];
@@ -109,11 +112,13 @@ const initialURL =
     await client.connect();
     console.log("Connected to MongoDB");
 
-    const dbname = client.db("Apprenticeships");
-    const final = dbname.collection("Standards-Providers-EPAOs-Scrape");
+    const db = client.db("Apprenticeships");
+    const collection = db.collection(
+      `${dateParam}-Standards-Providers-EPAOs-Scrape`
+    );
     console.log("Inserting documents...");
 
-    await final.insertMany(allStandards);
+    await collection.insertMany(allStandards);
     console.log("Documents inserted successfully!");
   } catch (error) {
     console.error("Error:", error);

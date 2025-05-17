@@ -2,8 +2,10 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
+const dateParam = process.argv[2];
 
-// Replace with your MongoDB connection details.
+console.log(dateParam);
+console.log("4getEPAOs");
 
 async function getEPAOs(standardID) {
   try {
@@ -41,8 +43,9 @@ async function main() {
   try {
     await client.connect();
     const db = client.db("Apprenticeships");
-    const collection = db.collection("Standards-Providers-EPAOs-Scrape");
-
+    const collection = db.collection(
+      `${dateParam}-Standards-Providers-EPAOs-Scrape`
+    );
     // Retrieve all standard documents.
     const standardsCursor = collection.find({});
     while (await standardsCursor.hasNext()) {

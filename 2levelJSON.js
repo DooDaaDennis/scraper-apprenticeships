@@ -1,5 +1,9 @@
 require("dotenv").config();
 const { MongoClient } = require("mongodb");
+const dateParam = process.argv[2];
+
+console.log(dateParam);
+console.log("2levelJSON");
 
 async function updateStandards() {
   const client = new MongoClient(process.env.DATABASE);
@@ -9,8 +13,9 @@ async function updateStandards() {
     console.log("Connected to MongoDB!");
 
     const db = client.db("Apprenticeships");
-    const collection = db.collection("Standards-Providers-EPAOs-Scrape");
-
+    const collection = db.collection(
+      `${dateParam}-Standards-Providers-EPAOs-Scrape`
+    );
     // Fetch all standard documents from the collection
     const standards = await collection.find({}).toArray();
     console.log(`Fetched ${standards.length} standards from the database.`);
@@ -41,7 +46,7 @@ async function updateStandards() {
         { $set: updatedDoc }
       );
       console.log(
-        `Updated document ${standard._id}: ${result.modifiedCount} document(s) modified.`
+        `Updated document ${standard._id}: ${result.modifiedCount}/${standards.length} document(s) modified.`
       );
     }
 

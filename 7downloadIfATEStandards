@@ -1,0 +1,34 @@
+const puppeteer = require("puppeteer");
+const fs = require("fs");
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+
+  await page.goto(
+    "https://www.instituteforapprenticeships.org/apprenticeships/"
+  ); // Change to the correct URL
+
+  await page.click("#ccc-recommended-settings");
+  await page.screenshot({ path: "screenshot.png" }); // Saves as screenshot.png
+  // Click the button/link that triggers the Blob download
+  await page.click("SELECTOR_FOR_DOWNLOAD_BUTTON"); // Replace with the correct selector
+
+  // Wait and monitor for a download-triggered request
+  page.on("response", async (response) => {
+    const headers = response.headers();
+    if (
+      headers["content-type"] &&
+      headers["content-type"].includes("application/octet-stream")
+    ) {
+      const buffer = await response.buffer();
+      fs.writeFileSync("downloaded_file.ext", buffer); // Change file extension accordingly
+      console.log("Download complete!");
+    }
+  });
+
+  // Keep the browser open for a moment to ensure the request is captured
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  await browser.close();
+})();
