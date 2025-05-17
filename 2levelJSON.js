@@ -16,23 +16,23 @@ async function updateStandards() {
     const collection = db.collection(
       `${dateParam}-Standards-Providers-EPAOs-Scrape`
     );
-    // Fetch all standard documents from the collection
+    // Fetch all standard from the collection
     const standards = await collection.find({}).toArray();
     console.log(`Fetched ${standards.length} standards from the database.`);
 
-    // Iterate through each document, transform its structure, and update the record
+    // Loop through standards and extract level
     for (const standard of standards) {
       // Extract level from standardName using regex
       const match = standard.standardName.match(/\(level (\d+)\)/i);
       const level = match ? parseInt(match[1]) : "Unknown";
 
-      // Remove the "(level x)" suffix from the standardName
+      // Remove 'level' from standardName
       const updatedName = standard.standardName.replace(
         /\s*\(level \d+\)/i,
         ""
       );
 
-      // Prepare the update object. Retain any fields you want to keep.
+      // Updated object
       const updatedDoc = {
         standardName: updatedName,
         level,
@@ -40,7 +40,7 @@ async function updateStandards() {
         pages: standard.pages,
       };
 
-      // Update the document using its unique _id field
+      // Update the standard using mongoid
       const result = await collection.updateOne(
         { _id: standard._id },
         { $set: updatedDoc }

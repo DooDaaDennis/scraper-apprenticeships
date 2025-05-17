@@ -56,7 +56,7 @@ async function main() {
         );
       }
 
-      // Update current with the scraped providers.
+      // Update current with the scraped providers
       await collection.updateOne(
         { _id: standard._id },
         { $set: { standardProviders } }

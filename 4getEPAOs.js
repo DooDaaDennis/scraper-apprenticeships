@@ -9,10 +9,10 @@ console.log("4getEPAOs");
 
 async function getEPAOs(LARS_code) {
   try {
-    // Build the URL using the LARS_code.
     const standardURL = `https://find-epao.apprenticeships.education.gov.uk/courses/${LARS_code}/assessment-organisations`;
     const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
+
     // Parse each EPAO entry on the page.
     const EPAOs = $("li.das-search-results__list-item")
       .map((_, element) => {
@@ -52,9 +52,11 @@ async function main() {
       const standard = await standardsCursor.next();
 
       console.log(`Getting EPAOs for: ${standard.standardName}`);
-      // Scrape EPAOs for the current standard using its LARS_code.
+
+      // Scrape EPAOs for the current standard
       const EPAOs = await getEPAOs(standard.LARS_code);
-      // Update the document by adding a new field, "standardEPAOs".
+
+      // Update standard with EPAOs
       await collection.updateOne(
         { _id: standard._id },
         { $set: { standardEPAOs: EPAOs } }
@@ -64,7 +66,6 @@ async function main() {
   } catch (error) {
     console.error("Error during MongoDB transformation:", error);
   } finally {
-    // Always close the connection once you're done.
     await client.close();
   }
 }

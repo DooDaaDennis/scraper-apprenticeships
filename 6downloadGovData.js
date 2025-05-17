@@ -16,7 +16,7 @@ async function exportToJson() {
     // Fetch all documents
     const data = await final.find({}).toArray();
 
-    // Convert to JSON format
+    // Convert to JSON
     const jsonData = JSON.stringify(data, null, 2);
 
     // Save to a file
