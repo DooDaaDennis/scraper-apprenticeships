@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        
+          
+
       - name: Install Dependencies
         run: npm install
         
@@ -26,5 +27,8 @@ jobs:
         env:
           DATABASE: ${{ secrets.DATABASE }}
         run: |
+          echo "Database connection string: $DATABASE"
+          node 1pagesFromApprenticeships.js $DATE
+          node 2levelJSON.js $DATE
           node 3getProviders.js $DATE
           node 4getEPAOS.js $DATE
