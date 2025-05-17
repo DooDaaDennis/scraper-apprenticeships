@@ -20,6 +20,8 @@ jobs:
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run Scripts
+        env:
+          DATABASE: ${{ secrets.DATABASE }}
         run: |
           node 1pagesFromApprenticeships.js $DATE
           node 2levelJSON.js $DATE
