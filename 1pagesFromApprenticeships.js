@@ -96,12 +96,12 @@ const initialURL =
     // console.log(allStandards[i]);
   }
 
-  // Save to file
-  fs.writeFileSync(
-    "standards.json",
-    JSON.stringify(allStandards, null, 2),
-    "utf-8"
-  );
+  // // Save to file
+  // fs.writeFileSync(
+  //   "standards.json",
+  //   JSON.stringify(allStandards, null, 2),
+  //   "utf-8"
+  // );
 
   const client = new MongoClient(process.env.DATABASE);
   try {
