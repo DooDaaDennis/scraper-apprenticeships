@@ -23,6 +23,11 @@ jobs:
       - name: Start Tailscale
         run: curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=${{ secrets.TAILSCALE_AUTH_KEY }}
 
+      - name: Echo Public IP
+        run: |
+          echo "Fetching public IP..."
+          curl -s https://ifconfig.me
+    
       - name: Run Scripts
         env:
           DATABASE: ${{ secrets.DATABASE }}
