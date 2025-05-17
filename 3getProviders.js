@@ -38,7 +38,7 @@ async function main() {
     const collection = db.collection(
       `${dateParam}-Standards-Providers-EPAOs-Scrape`
     );
-    // Retrieve all standards documents.
+    // Retrieve all standards.
     const standardsCursor = collection.find({});
     while (await standardsCursor.hasNext()) {
       const standard = await standardsCursor.next();
@@ -56,7 +56,7 @@ async function main() {
         );
       }
 
-      // Update the current document wit  h the scraped providers.
+      // Update current with the scraped providers.
       await collection.updateOne(
         { _id: standard._id },
         { $set: { standardProviders } }
