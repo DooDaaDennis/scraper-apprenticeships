@@ -20,7 +20,8 @@ async function getEPAOs(standardID) {
           .find("dl dt:contains('Standard versions')")
           .next("dd")
           .text()
-          .trim();
+          .split(",")
+          .map((version) => version.trim());
 
         return { EPAOName, EPAOID, EPAOLink, EPAOversions };
       })
