@@ -36,7 +36,7 @@ async function updateStandards() {
       const updatedDoc = {
         standardName: updatedName,
         level,
-        standardID: standard.standardID,
+        LARS_code: standard.LARS_code,
         pages: standard.pages,
       };
 

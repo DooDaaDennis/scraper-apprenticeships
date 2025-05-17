@@ -46,9 +46,9 @@ async function getItems(url) {
       .map((_, item) => {
         const $item = $(item);
         const standardName = $item.find("h2").text().trim();
-        const standardID = $item.find("a").attr("id").split("-").pop();
+        const LARS_code = $item.find("a").attr("id").split("-").pop();
 
-        return { standardName, standardID };
+        return { standardName, LARS_code };
       })
       .toArray();
 
@@ -92,7 +92,7 @@ const initialURL =
     );
 
     const standardPages = await getAllPages(
-      `${initialURL}/${standard.standardID}/providers`
+      `${initialURL}/${standard.LARS_code}/providers`
     );
 
     allStandards[i].pages = standardPages;

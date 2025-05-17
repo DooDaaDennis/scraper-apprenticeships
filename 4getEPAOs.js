@@ -7,10 +7,10 @@ const dateParam = process.argv[2];
 console.log(dateParam);
 console.log("4getEPAOs");
 
-async function getEPAOs(standardID) {
+async function getEPAOs(LARS_code) {
   try {
-    // Build the URL using the standardID.
-    const standardURL = `https://find-epao.apprenticeships.education.gov.uk/courses/${standardID}/assessment-organisations`;
+    // Build the URL using the LARS_code.
+    const standardURL = `https://find-epao.apprenticeships.education.gov.uk/courses/${LARS_code}/assessment-organisations`;
     const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
     // Parse each EPAO entry on the page.
@@ -33,7 +33,7 @@ async function getEPAOs(standardID) {
 
     return EPAOs;
   } catch (error) {
-    console.error(`Error fetching EPAOs for standardID ${standardID}:`, error);
+    console.error(`Error fetching EPAOs for LARS_code ${LARS_code}:`, error);
     return [];
   }
 }
@@ -52,8 +52,8 @@ async function main() {
       const standard = await standardsCursor.next();
 
       console.log(`Getting EPAOs for: ${standard.standardName}`);
-      // Scrape EPAOs for the current standard using its standardID.
-      const EPAOs = await getEPAOs(standard.standardID);
+      // Scrape EPAOs for the current standard using its LARS_code.
+      const EPAOs = await getEPAOs(standard.LARS_code);
       // Update the document by adding a new field, "standardEPAOs".
       await collection.updateOne(
         { _id: standard._id },
