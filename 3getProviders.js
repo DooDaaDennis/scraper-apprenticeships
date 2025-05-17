@@ -1,14 +1,11 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const fs = require("fs");
-
-const myData = fs.readFileSync("standards.json", "utf-8");
-const standards = JSON.parse(myData);
+const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
 async function getProviders(pageURL) {
   try {
-    const providerURL = pageURL;
-    const { data } = await axios.get(providerURL);
+    const { data } = await axios.get(pageURL);
     const $ = cheerio.load(data);
     const trainingProviders = $("div.govuk-summary-card__title-wrapper h2 a")
       .map((_, provider) => {
@@ -23,26 +20,49 @@ async function getProviders(pageURL) {
 
     return trainingProviders;
   } catch (error) {
-    console.error("Error fetching providers:", error);
+    console.error("Error fetching providers for URL:", pageURL, error);
     return [];
   }
 }
 
-(async () => {
-  console.log("Getting providers");
-  for (const standard of standards) {
-    console.log("Getting providers for:", standard.standardName);
-    const standardProviders = [];
-    for (const page of standard.pages) {
-      const providers = await getProviders(page);
-      standardProviders.push(...providers);
-    }
-    standard.standardProviders = standardProviders;
-  }
+// update mongo
+async function main() {
+  const client = new MongoClient(process.env.DATABASE);
+  try {
+    await client.connect();
+    const db = client.db("Apprenticeships");
+    const collection = db.collection("Standards-Providers-EPAOs-Scrape");
 
-  fs.writeFileSync(
-    "standards.json",
-    JSON.stringify(standards, null, 2),
-    "utf-8"
-  );
-})();
+    // Retrieve all standards documents.
+    const standardsCursor = collection.find({});
+    while (await standardsCursor.hasNext()) {
+      const standard = await standardsCursor.next();
+      console.log("Getting providers for:", standard.standardName);
+      const standardProviders = [];
+
+      if (standard.pages && Array.isArray(standard.pages)) {
+        for (const page of standard.pages) {
+          const providers = await getProviders(page);
+          standardProviders.push(...providers);
+        }
+      } else {
+        console.warn(
+          `Standard "${standard.standardName}" does not have a valid "pages" array.`
+        );
+      }
+
+      // Update the current document wit  h the scraped providers.
+      await collection.updateOne(
+        { _id: standard._id },
+        { $set: { standardProviders } }
+      );
+      console.log(`Updated standard: ${standard.standardName}`);
+    }
+  } catch (error) {
+    console.error("Error during MongoDB transformation:", error);
+  } finally {
+    await client.close();
+  }
+}
+
+main();

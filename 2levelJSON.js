@@ -1,25 +1,56 @@
-const fs = require("fs");
-const data = fs.readFileSync("standards.json", "utf-8");
-const standards = JSON.parse(data);
+require("dotenv").config();
+const { MongoClient } = require("mongodb");
 
-console.log("Assigning and removing levels");
+async function updateStandards() {
+  const client = new MongoClient(process.env.DATABASE);
 
-const transformedData = standards.map((standard) => {
-  // Extract level from standardName
-  const match = standard.standardName.match(/\(level (\d+)\)/);
-  const level = match ? parseInt(match[1]) : "Unknown"; // Fallback if level isn't found
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB!");
 
-  return {
-    standardName: standard.standardName.replace(/\s\(level \d+\)/, ""), // Remove level info from name
-    standardID: standard.standardID,
-    level,
-    pages: standard.pages,
-  };
-});
+    const db = client.db("Apprenticeships");
+    const collection = db.collection("Standards-Providers-EPAOs-Scrape");
 
-// Output result
-fs.writeFileSync(
-  "standards.json",
-  JSON.stringify(transformedData, null, 2),
-  "utf-8"
-);
+    // Fetch all standard documents from the collection
+    const standards = await collection.find({}).toArray();
+    console.log(`Fetched ${standards.length} standards from the database.`);
+
+    // Iterate through each document, transform its structure, and update the record
+    for (const standard of standards) {
+      // Extract level from standardName using regex
+      const match = standard.standardName.match(/\(level (\d+)\)/i);
+      const level = match ? parseInt(match[1]) : "Unknown";
+
+      // Remove the "(level x)" suffix from the standardName
+      const updatedName = standard.standardName.replace(
+        /\s*\(level \d+\)/i,
+        ""
+      );
+
+      // Prepare the update object. Retain any fields you want to keep.
+      const updatedDoc = {
+        standardName: updatedName,
+        level,
+        standardID: standard.standardID,
+        pages: standard.pages,
+      };
+
+      // Update the document using its unique _id field
+      const result = await collection.updateOne(
+        { _id: standard._id },
+        { $set: updatedDoc }
+      );
+      console.log(
+        `Updated document ${standard._id}: ${result.modifiedCount} document(s) modified.`
+      );
+    }
+
+    console.log("All standards updated successfully!");
+  } catch (error) {
+    console.error("Error updating standards:", error);
+  } finally {
+    await client.close();
+  }
+}
+
+updateStandards();

@@ -1,18 +1,20 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const fs = require("fs");
+const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
-const myData = fs.readFileSync("standards.json", "utf-8");
-const standards = JSON.parse(myData);
+// Replace with your MongoDB connection details.
 
 async function getEPAOs(standardID) {
   try {
+    // Build the URL using the standardID.
     const standardURL = `https://find-epao.apprenticeships.education.gov.uk/courses/${standardID}/assessment-organisations`;
     const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
-    const EPAO = $("li.das-search-results__list-item")
-      .map((_, EPAO) => {
-        const $EPAO = $(EPAO);
+    // Parse each EPAO entry on the page.
+    const EPAOs = $("li.das-search-results__list-item")
+      .map((_, element) => {
+        const $EPAO = $(element);
         const EPAOName = $EPAO.find("h2 a").text().trim();
         const EPAOID = $EPAO.find("h2 a").attr("id");
         const EPAOLink = $EPAO.find("h2 a").attr("href");
@@ -27,26 +29,41 @@ async function getEPAOs(standardID) {
       })
       .toArray();
 
-    return EPAO;
+    return EPAOs;
   } catch (error) {
-    console.error("Error fetching EPAOs:", error);
+    console.error(`Error fetching EPAOs for standardID ${standardID}:`, error);
     return [];
   }
 }
 
-(async () => {
-  console.log("Getting EPAOs");
-  for (const standard of standards) {
-    console.log("Getting EPAOs for:", standard.standardName);
-    const standardEPAOs = [];
-    const EPAOs = await getEPAOs(standard.standardID);
-    standardEPAOs.push(...EPAOs);
-    standard.standardEPAOs = standardEPAOs;
-  }
+async function main() {
+  const client = new MongoClient(process.env.DATABASE);
+  try {
+    await client.connect();
+    const db = client.db("Apprenticeships");
+    const collection = db.collection("Standards-Providers-EPAOs-Scrape");
 
-  fs.writeFileSync(
-    "standards.json",
-    JSON.stringify(standards, null, 2),
-    "utf-8"
-  );
-})();
+    // Retrieve all standard documents.
+    const standardsCursor = collection.find({});
+    while (await standardsCursor.hasNext()) {
+      const standard = await standardsCursor.next();
+
+      console.log(`Getting EPAOs for: ${standard.standardName}`);
+      // Scrape EPAOs for the current standard using its standardID.
+      const EPAOs = await getEPAOs(standard.standardID);
+      // Update the document by adding a new field, "standardEPAOs".
+      await collection.updateOne(
+        { _id: standard._id },
+        { $set: { standardEPAOs: EPAOs } }
+      );
+      console.log(`Updated standard: ${standard.standardName}`);
+    }
+  } catch (error) {
+    console.error("Error during MongoDB transformation:", error);
+  } finally {
+    // Always close the connection once you're done.
+    await client.close();
+  }
+}
+
+main();
