@@ -24,20 +24,11 @@ jobs:
         run: |
           curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=${{ secrets.TAILSCALE_AUTH_KEY }}
           sudo tailscale set --exit-node=${{ secrets.EXIT_NODE_IP }}
-
-
-      - name: Echo Public IP
-        run: |
-          echo "Fetching public IP..."
-          curl -s https://ifconfig.me
-          sudo tailscale status
-
     
       - name: Run Scripts
         env:
           DATABASE: ${{ secrets.DATABASE }}
         run: |
-          echo "Database connection string: $DATABASE"
           node 1pagesFromApprenticeships.js $DATE
           node 2levelJSON.js $DATE
           node 3getProviders.js $DATE
