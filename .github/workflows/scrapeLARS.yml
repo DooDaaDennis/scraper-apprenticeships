@@ -23,7 +23,7 @@ jobs:
       - name: Start Tailscale
         run: |
           curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=${{ secrets.TAILSCALE_AUTH_KEY }}
-          tailscale set --exit-node=${{ secrets.EXIT_NODE_IP }}
+          sudo tailscale set --exit-node=${{ secrets.EXIT_NODE_IP }}
 
 
       - name: Echo Public IP
