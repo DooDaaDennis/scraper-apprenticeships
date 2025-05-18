@@ -30,6 +30,8 @@ jobs:
         run: |
           echo "Fetching public IP..."
           curl -s https://ifconfig.me
+          sudo tailscale status
+
     
       - name: Run Scripts
         env:
