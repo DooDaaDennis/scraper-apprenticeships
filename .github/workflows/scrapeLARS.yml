@@ -32,4 +32,4 @@ jobs:
           node 1pagesFromApprenticeships.js $DATE
           node 2levelJSON.js $DATE
           node 3getProviders.js $DATE
-          node 4getEPAOS.js $DATE
+          node 4getEPAOs.js $DATE
