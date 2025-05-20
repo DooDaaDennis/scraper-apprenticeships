@@ -1,0 +1,50 @@
+const fs = require("fs");
+
+// Read file synchronously and parse JSON
+const apprenticeships = JSON.parse(fs.readFileSync("bodyArray.json", "utf8"));
+
+const keysToRemove = [
+  "Version Number",
+  "Proposal Approved",
+  "Standard Approved",
+  "Assessment Plan Approved",
+  "Funding Approved",
+  "Status",
+  "Approved for Delivery Date",
+  "Retired date",
+  "Withdrawn date",
+  "Maximum Funding (£)",
+  "Last Updated",
+  "Link",
+  "Typical Duration",
+  "Core and options",
+  "Options",
+  "Banners",
+  "Integrated Degree",
+  "Integration",
+  "Integrated Apprenticeship",
+];
+
+const groupedByReference = apprenticeships.reduce((acc, item) => {
+  if (!acc[item.Reference]) {
+    acc[item.Reference] = { ...item, versions: [] };
+
+    // Remove all keys dynamically
+    keysToRemove.forEach((key) => delete acc[item.Reference][key]);
+  }
+
+  acc[item.Reference].versions.push(
+    Object.fromEntries(
+      Object.entries(item).filter(([key]) => keysToRemove.includes(key))
+    )
+  );
+
+  return acc;
+}, {});
+
+fs.writeFileSync(
+  "bodyArrayGrouped.json",
+  JSON.stringify(groupedByReference, null, 2),
+  "utf8" // Change from "utf-8" to "utf8"
+);
+console.log(Object.values(groupedByReference));

@@ -52,6 +52,7 @@ async function getStandards(bodyArray) {
   const csvFirstLineRemoved = csvWithLines.slice(1).join("\n");
 
   const standardsJSON = [];
+  fs.writeFileSync("bodyArray.csv", csvFirstLineRemoved, "utf-8");
 
   Readable.from(csvFirstLineRemoved)
     .pipe(csv())
@@ -64,11 +65,15 @@ async function getStandards(bodyArray) {
       }
     })
     .on("end", () => {
-      console.log(standardsJSON);
+      // console.log(standardsJSON);
+      fs.writeFileSync(
+        "bodyArray.json",
+        JSON.stringify(standardsJSON, null, 2),
+        "utf-8"
+      );
     });
+  return standardsJSON;
 }
 
 const bodyArray = await getBodyArray();
-// fs.writeFileSync("bodyArray.txt", JSON.stringify(bodyArray), "utf-8");
-console.log(bodyArray);
 getStandards(bodyArray);
