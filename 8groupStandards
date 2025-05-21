@@ -1,6 +1,5 @@
 const fs = require("fs");
 
-// Read file synchronously and parse JSON
 const apprenticeships = JSON.parse(fs.readFileSync("bodyArray.json", "utf8"));
 
 const keysToRemove = [
@@ -45,6 +44,6 @@ const groupedByReference = apprenticeships.reduce((acc, item) => {
 fs.writeFileSync(
   "bodyArrayGrouped.json",
   JSON.stringify(groupedByReference, null, 2),
-  "utf8" // Change from "utf-8" to "utf8"
+  "utf8"
 );
 console.log(Object.values(groupedByReference));
