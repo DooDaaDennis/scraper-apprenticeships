@@ -2,6 +2,10 @@ const fs = require("fs");
 
 const apprenticeships = JSON.parse(fs.readFileSync("bodyArray.json", "utf8"));
 
+apprenticeships.sort((a, b) => {
+  return parseFloat(b["Version Number"]) - parseFloat(a["Version Number"]);
+});
+
 const keysToRemove = [
   "Version Number",
   "Proposal Approved",

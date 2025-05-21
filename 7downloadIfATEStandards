@@ -58,7 +58,7 @@ async function getStandards(bodyArray) {
     .pipe(csv())
     .on("data", (data) => {
       Object.keys(data).forEach((key) => {
-        data[key] = data[key].replace(/\x00/g, "").trim(); // Clean up null bytes and spaces
+        data[key] = data[key].replace(/\x00/g, "").trim(); // Clean up nulls and spaces
       });
       if (Object.values(data).some((value) => value.length > 0)) {
         standardsJSON.push(data);
