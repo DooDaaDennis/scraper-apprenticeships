@@ -73,7 +73,7 @@ const initialURL =
       const standardProviders = await getProviders(page);
       standard.providers.push(...standardProviders);
     }
-    i += 1;
+    i++;
   }
   fs.writeFileSync(
     "apprenticeshipArrayProviders.json",
