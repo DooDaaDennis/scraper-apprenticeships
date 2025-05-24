@@ -77,9 +77,24 @@ async function getActiveApprenticesAllStandards() {
       standardURL,
       axiosInstance
     );
-    i++;
     console.log(activeApprentices);
+    i++;
+    for (const standardVersion of standard.versions) {
+      const activeApprenticesObject = activeApprentices.find(
+        (activeVersion) =>
+          activeVersion.version === standardVersion["Version Number"]
+      ) ?? { activeApprentices: 0 };
+      standardVersion.activeApprentices = activeApprenticesObject
+        ? activeApprenticesObject.activeApprentices
+        : 0;
+    }
   }
 }
 
-getActiveApprenticesAllStandards();
+await getActiveApprenticesAllStandards();
+
+fs.writeFileSync(
+  "apprenticeshipArrayProvidersEPAOsActiveApprentices.json",
+  JSON.stringify(allStandards, null, 2),
+  "utf8"
+);
