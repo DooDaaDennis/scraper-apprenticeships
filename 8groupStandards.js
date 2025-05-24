@@ -45,9 +45,14 @@ const groupedByReference = apprenticeships.reduce((acc, item) => {
   return acc;
 }, {});
 
+const apprenticeshipArray = Object.keys(groupedByReference).map((key) => ({
+  reference: key,
+  ...groupedByReference[key],
+}));
+
 fs.writeFileSync(
-  "bodyArrayGrouped.json",
-  JSON.stringify(groupedByReference, null, 2),
+  "apprenticeshipArray.json",
+  JSON.stringify(apprenticeshipArray, null, 2),
   "utf8"
 );
 console.log(Object.values(groupedByReference));

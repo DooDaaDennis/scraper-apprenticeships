@@ -1,13 +1,16 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
-const { MongoClient } = require("mongodb");
-require("dotenv").config();
+import axios from "axios";
+import * as cheerio from "cheerio";
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const dateParam = process.argv[2];
 
 console.log(dateParam);
 console.log("3getProviders");
 
-async function getProviders(pageURL) {
+export async function getProviders(pageURL) {
   try {
     const { data } = await axios.get(pageURL);
     const $ = cheerio.load(data);

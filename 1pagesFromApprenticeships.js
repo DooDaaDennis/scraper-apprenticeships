@@ -1,13 +1,16 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
-require("dotenv").config();
-const { MongoClient } = require("mongodb");
+import axios from "axios";
+import * as cheerio from "cheerio";
+import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
+
+dotenv.config();
+
 const dateParam = process.argv[2];
 
 console.log(dateParam);
 console.log("1pagesFromApprenticeships");
 
-async function getAllPages(baseURL) {
+export async function getAllPages(baseURL) {
   const allPages = [];
   let pageNumber = 1;
   try {
@@ -37,7 +40,7 @@ async function getAllPages(baseURL) {
   }
 }
 
-async function getItems(url) {
+export async function getItems(url) {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
