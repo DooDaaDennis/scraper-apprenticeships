@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 const apprenticeships = JSON.parse(fs.readFileSync("bodyArray.json", "utf8"));
 

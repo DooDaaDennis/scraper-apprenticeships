@@ -105,7 +105,6 @@ async function getRegionalApprenticesAllStandards() {
         completedAssessments: region.completedAssessments,
       };
     }
-    console.log(standard);
     i++;
   }
 }

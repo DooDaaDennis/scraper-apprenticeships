@@ -25,7 +25,7 @@ async function addToDatabase() {
     console.log("Connected to MongoDB");
 
     const db = client.db("Apprenticeships");
-    const collection = db.collection("Standards-Providers-EPAOs-Scrape");
+    const collection = db.collection("Scrape");
     console.log("Inserting documents...");
 
     await collection.insertMany(allStandards);

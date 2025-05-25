@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "all": "set DATE=%date% && node 1pagesFromApprenticeships.js %DATE% && node 2levelJSON.js %DATE% && node 3getProviders.js %DATE% && node 4getEPAOS.js %DATE%"
+    "all": "node 7downloadIfATEStandards.js && node 8groupStandards.js && node 9providers.js && node 10getEPAOs.js && node 11liveApprentices && node 12getRegionalApprentices.js && node 13addToMongo.js"
   },
   "author": "",
   "license": "ISC",
