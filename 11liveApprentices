@@ -41,8 +41,15 @@ async function getActiveApprentices(url, axInstance) {
         const activeApprentices = parseInt(
           $(row).find("td:nth-child(2)").text().trim()
         );
+        const completedAssessments = parseInt(
+          $(row).find("td:nth-child(4)").text().trim()
+        );
 
-        apprenticesData.push({ version, activeApprentices });
+        apprenticesData.push({
+          version,
+          activeApprentices,
+          completedAssessments,
+        });
       });
 
     return apprenticesData;
@@ -86,6 +93,9 @@ async function getActiveApprenticesAllStandards() {
       ) ?? { activeApprentices: 0 };
       standardVersion.activeApprentices = activeApprenticesObject
         ? activeApprenticesObject.activeApprentices
+        : 0;
+      standardVersion.completedAssessments = activeApprenticesObject
+        ? activeApprenticesObject.completedAssessments
         : 0;
     }
   }
