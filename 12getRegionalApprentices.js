@@ -66,7 +66,11 @@ async function getRegionalApprentices(url, axInstance) {
     return apprenticesData;
   } catch (error) {
     console.error("Error or no data");
-    return [];
+    return regions.map((region) => ({
+      region,
+      activeApprentices: 0,
+      completedAssessments: 0,
+    }));
   }
 }
 
