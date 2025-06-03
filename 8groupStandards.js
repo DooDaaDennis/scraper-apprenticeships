@@ -55,4 +55,4 @@ fs.writeFileSync(
   JSON.stringify(apprenticeshipArray, null, 2),
   "utf8"
 );
-console.log(Object.values(groupedByReference));
+// console.log(Object.values(groupedByReference));
