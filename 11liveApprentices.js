@@ -37,7 +37,7 @@ async function getActiveApprentices(url, axInstance) {
       .find("tbody tr")
       .slice(0, -1)
       .each((_, row) => {
-        const version = $(row).find("th:nth-child(1)").text().trim();
+        const version = parseFloat($(row).find("th:nth-child(1)").text().trim());
         const activeApprentices = parseInt(
           $(row).find("td:nth-child(2)").text().trim()
         );

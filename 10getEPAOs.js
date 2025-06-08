@@ -20,8 +20,7 @@ async function getEPAOs(LARS_code) {
           .next("dd")
           .text()
           .split(",")
-          .map((version) => version.trim());
-
+          .map((version) => parseFloat(version.trim())); // Convert versions to numbers
         return { EPAOName, EPAOID, EPAOLink, EPAOversions };
       })
       .toArray();

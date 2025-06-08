@@ -39,6 +39,10 @@ const groupedByReference = apprenticeships.reduce((acc, item) => {
   acc[item.Reference].versions.push(
     Object.fromEntries(
       Object.entries(item).filter(([key]) => keysToRemove.includes(key))
+      .map(([key, value]) => [
+          key,
+          key === "Version Number" ? parseFloat(value) : value, 
+        ])
     )
   );
 
