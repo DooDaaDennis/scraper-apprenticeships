@@ -32,7 +32,7 @@ const groupedByReference = apprenticeships.reduce((acc, item) => {
   if (!acc[item.Reference]) {
     acc[item.Reference] = { ...item, versions: [] };
 
-    // Remove all keys dynamically
+    // Remove all keys in array
     keysToRemove.forEach((key) => delete acc[item.Reference][key]);
   }
 
