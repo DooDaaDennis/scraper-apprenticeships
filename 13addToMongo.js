@@ -11,10 +11,9 @@ const allStandards = JSON.parse(
 );
 
 const now = new Date();
-const dateLogged = now.toISOString();
 
 allStandards.forEach((standard) => {
-  standard.dateLogged = dateLogged;
+  standard.dateLogged = now;
 });
 
 async function addToDatabase() {
