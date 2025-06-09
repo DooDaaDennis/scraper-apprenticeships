@@ -87,7 +87,6 @@ async function cleanDatabase(collection){
     }
   ]
 );
-    console.log("Documents amended successfully!");
   } catch (error) {
     console.error("Error:", error);
   } 
