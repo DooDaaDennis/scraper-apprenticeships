@@ -9,7 +9,7 @@ import fs from "fs";
 
 async function getBodyArray() {
   try {
-    const standardURL = `https://www.instituteforapprenticeships.org/apprenticeships/`;
+    const standardURL = `https://skillsengland.education.gov.uk/apprenticeships/`;
     const { data } = await axios.get(standardURL);
     const $ = cheerio.load(data);
 
@@ -25,7 +25,7 @@ async function getBodyArray() {
     return standards;
   } catch (error) {
     console.error(
-      `Error getting standards from https://www.instituteforapprenticeships.org/apprenticeships/:`,
+      `Error getting standards from https://skillsengland.education.gov.uk/apprenticeships/:`,
       error
     );
     return [];
@@ -34,7 +34,7 @@ async function getBodyArray() {
 
 async function getStandards(bodyArray) {
   const response = await fetch(
-    "https://www.instituteforapprenticeships.org/apprenticeships/download",
+    "https://skillsengland.education.gov.uk/apprenticeships/download",
     {
       method: "POST",
       body: JSON.stringify(bodyArray),
